@@ -1,0 +1,98 @@
+.clc-register-form .frow {
+    display: flex;
+    column-gap: 30px;
+}
+
+.clc-register-form .fcol {
+    flex: 1;
+
+}
+.clc-register-form  label {
+    display: block;
+}
+.clc-register-form .wpcf7-form-control-wrap {
+    display: block;
+    margin-top: 5px;
+}
+.clc-register-form .label {
+    color: #000;
+    padding-left: 15px;
+}
+.clc-register-form  label.form-content .wpcf7-form-control {
+    border-radius: 10px !important;
+    border: 1px solid rgba(28,28,28,.1);
+    appearance: none;
+    cursor: pointer;
+    user-select: none;
+    transition: .3s;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    color: #1c1c1c;
+    position: relative;
+    width: 100%;
+    height: 55px !important;
+    background: #f2f2f2 !important;
+}
+.clc-register-form .wpcf7-date {
+    text-align: left;
+    padding: 0 20px !important;
+    line-height: 50px !important;
+    color: #1c1c1c;
+}
+.clc-register-form .wpcf7-form-control-wrap label {
+    display: flex;
+}
+
+.clc-register-form .wpcf7-list-item {
+    margin-left: 0;
+}
+
+.clc-register-form .wpcf7-form-control-wrap .wpcf7-list-item-label {
+    padding-left: 10px;
+    line-height: 1.2;
+}
+.clc-register-form .wpcf7-not-valid-tip {
+    color: #dc3232 !important;
+    font-size: 1em  !important;
+    font-weight: normal  !important;
+    display: block  !important;
+    margin-top: -15px;
+    margin-bottom: 20px;
+}
+.clc-register-form input.wpcf7-not-valid {
+    border: 1px solid #dc3232 !important;
+}
+.clc-register-form .wpcf7-acceptance.wpcf7-not-valid .wpcf7-list-item-label {
+    color: #dc3232 !important;
+}
+.clc-register-form .wpcf7-acceptance.wpcf7-not-valid input[type="checkbox"] {
+    outline: 1px solid #dc3232 !important;
+    -moz-appearance:none;
+    -webkit-appearance:none;
+    -o-appearance:none;
+    content: none;
+    width: 13px;
+    height: 13px;
+    padding: 0;
+    border-radius: 2px;
+}
+.clc-register-form .wpcf7-acceptance + .wpcf7-not-valid-tip {
+    display: none !important;
+}
+.clc-register-form input.wpcf7-submit {
+    background: linear-gradient(90deg,#06CA8C,#91d7ac);
+    width: 100%;
+    height: 55px;
+    border-radius: 10px !important;
+}
+
+.wpcf7 form .clc-register-form .wpcf7-response-output {
+    margin: 0 0 20px;
+}
+
+@media screen and (max-width: 768px) {
+    .clc-register-form .frow {
+        flex-direction: column;
+    }
+}

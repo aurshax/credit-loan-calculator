@@ -1,0 +1,11 @@
+{
+    "name": "aur/credit-loan-calculator",
+    "authors": [
+        {
+            "name": "Umid Akhmedjanov"
+        }
+    ],
+    "require": {
+        "giggsey/libphonenumber-for-php": "^8.13"
+    }
+}

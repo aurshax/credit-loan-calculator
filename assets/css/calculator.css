@@ -1,0 +1,102 @@
+.cls-loan-calculator-wrapper {
+    padding: 20px;
+    border-radius: 10px;
+    background: #fff;
+}
+.cls-loan-calculator-wrapper .ui-state-default, .cls-loan-calculator-wrapper .ui-widget-content .ui-state-default {
+    border: 1px solid #c5c5c5;
+    background: #06CA8C;
+    font-weight: normal;
+    color: #454545;
+    border-radius: 50%;
+}
+
+.cls-loan-calculator-wrapper .ui-slider{
+    cursor: pointer;
+    border-radius: 20px;
+    height: 24px;
+    width: 100%;
+    outline: 0;
+    -webkit-appearance: none;
+}
+
+.cls-loan-calculator-wrapper .ui-slider-range {
+    background: rgb(231, 231, 231);
+    border-radius: 20px;
+    margin-bottom: 20px;
+}
+
+.cls-loan-calculator-wrapper .ui-slider-handle {
+    width: 30px;
+    height: 30px;
+}
+
+.cls-loan-calculator-wrapper input {
+    background: transparent !important;
+    border: 0 !important;
+}
+
+#cls-amount {
+    font-size: 45px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 55px;
+    color: #06CA8C;
+    text-align: right;
+    padding-right: 0;
+}
+
+.cls-loan-calculator-wrapper .cls-submit {
+    background: linear-gradient(90deg,#06CA8C,#91d7ac);
+    width: 100%;
+    height: 55px;
+    border-radius: 10px !important;
+}
+
+.cls-loan-calculator-wrapper .cls-submit span {
+    display: inline-block;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.cls-range-min-max {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    font-size: 12px;
+}
+
+.cls-loan-calculator-slider {
+    height: 24px;
+    margin-bottom: 24px;
+    border-radius: 12px;
+}
+
+.cls-loan-calculator-slider .noUi-connect {
+    border-radius: 12px;
+    background: linear-gradient(90deg,#06CA8C,#91d7ac);
+}
+
+.cls-loan-calculator-slider .noUi-handle {
+    height: 30px;
+    width: 30px;
+    top: -5px;
+    right: -15px;
+    border-radius: 15px;
+    background: #06CA8C;
+    box-shadow: initial;
+}
+.cls-loan-calculator-slider .noUi-handle:before,
+.cls-loan-calculator-slider .noUi-handle:after {
+    display: none;
+}
+
+.cls-loan-calculator-slider .noUi-pips-horizontal .noUi-value {
+    display: none;
+}
+
+@media screen and (max-width: 768px) {
+    #cls-amount {
+        font-size: 30px;
+    }
+}
