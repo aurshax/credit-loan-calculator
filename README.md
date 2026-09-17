@@ -1,93 +1,137 @@
-# WP Form Integration
+# Credit Loan Calculator
 
+A WordPress plugin that adds a loan calculator to Elementor, captures the resulting
+enquiry through Contact Form 7, stores it in WordPress, and pushes the lead to
+[Smaily](https://smaily.com) for email follow-up.
 
+It is not a calculator widget on its own — it is the whole path from "visitor moves a
+slider" to "lead sitting in the mailing list", which is usually where these projects
+actually break.
 
-## Getting started
+---
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## What it does
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+**1. Elementor widget**
 
-## Add your files
+Registers a `Calculator` widget (`clc_calculator`) under the Elementor panel with its
+own controls: the field label, the submit button label, and the gap between elements.
+Styles and scripts are enqueued through `get_style_depends()` / `get_script_depends()`,
+so nothing loads on pages that don't use the widget.
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+**2. Custom Contact Form 7 form tags**
 
-```
-cd existing_repo
-git remote add origin https://gitlab.com/aurshax/wp-form-integration.git
-git branch -M main
-git push -uf origin main
-```
+Rather than asking the site owner to hand-build a form, the plugin registers four
+custom CF7 form tags:
 
-## Integrate with your tools
+| Tag | Purpose |
+|---|---|
+| `[clc_name]` / `[clc_name*]` | Name field with its own validation |
+| `[clc_phone]` / `[clc_phone*]` | Phone field with format validation |
+| `[clc_date]` / `[clc_date*]` | Date field with range validation |
+| `[clc_price]` | Loan amount, formatted for display |
 
-- [ ] [Set up project integrations](https://gitlab.com/aurshax/wp-form-integration/-/settings/integrations)
+Each one hooks into CF7's own validation pipeline
+(`wpcf7_validate_clc_phone`, `wpcf7_validate_clc_name`, `wpcf7_validate_clc_date`
+and their required variants), so errors appear inline exactly like native CF7 fields
+instead of through a separate mechanism.
 
-## Collaborate with your team
+**3. Lead capture**
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+On `wpcf7_before_send_mail` the plugin creates a lead and does two things with it:
 
-## Test and Deploy
+- **Saves it locally** as a `submission` custom post type, with a meta box on the edit
+  screen and custom columns in the admin list, so the client can read enquiries without
+  leaving WordPress and without depending on email delivery.
+- **Sends it to Smaily** through the API client in
+  `includes/classes/class-smaily-api-integration.php`, which talks to
+  `https://{domain}.sendsmaily.net/api/` over `wp_remote_get()` / `wp_remote_post()`
+  and creates the subscriber.
 
-Use the built-in continuous integration in GitLab.
+Storing the submission locally is deliberate: if the API call or the notification email
+fails, the enquiry is still on the site rather than lost.
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+---
 
 ## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+
+1. Copy the plugin folder into `wp-content/plugins/` (or upload the zip through
+   **Plugins → Add New → Upload Plugin**).
+2. Activate **Credit Loan Calculator**.
+3. Make sure **Elementor** and **Contact Form 7** are both active.
+
+## Configuration
+
+Settings live under the plugin's admin page.
+
+**Smaily**
+
+| Field | Value |
+|---|---|
+| Domain | Your Smaily subdomain — the `{domain}` in `{domain}.sendsmaily.net` |
+| Username | Smaily API username |
+| Password | Smaily API password |
+
+**Loan settings**
+
+| Field | Value |
+|---|---|
+| Registration Page URL | Where the visitor is sent after submitting |
+| Contact Form ID | The ID of the CF7 form that carries the `clc_*` tags |
 
 ## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+1. Create a Contact Form 7 form and use the `clc_*` tags in it, for example:
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+   ```
+   [clc_name* applicant-name]
+   [clc_phone* applicant-phone]
+   [clc_date* loan-date]
+   [clc_price loan-amount]
+   [submit "Apply"]
+   ```
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
+2. Put that form's ID into **Contact Form ID** in the plugin settings.
+3. Drop the **Calculator** widget onto a page in Elementor and set its label,
+   button label and gap.
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
+Submissions then appear under **Submissions** in the WordPress admin, and in Smaily.
 
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
+---
 
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+## Requirements
+
+- WordPress 5.6+
+- PHP 8.0+
+- Elementor
+- Contact Form 7
+- A Smaily account with API access
+
+## Structure
+
+```
+credit-loan-calculator.php        Plugin bootstrap
+includes/
+  class-autoloader.php            PSR-style class autoloading
+  class-core.php                  Plugin core
+  class-starter.php               Bootstrapping
+  elementor/
+    class-elementor-builder.php   Registers the widget with Elementor
+    class-calculator.php          The Calculator widget
+  classes/
+    class-admin.php               Admin screens
+    class-contact-form-field.php  Custom CF7 tags, validation, lead creation
+    class-smaily-api-integration.php  Smaily API client
+  post-types/
+    class-submissions.php         `submission` CPT, meta box, admin columns
+  functions/
+    settings.php                  Settings page
+    helpers.php                   Settings accessor
+assets/                           CSS and JS
+```
+
+Coding standards are enforced with PHPCS (`phpcs.xml`).
 
 ## License
-For open source projects, say how it is licensed.
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+MIT — see [LICENSE](LICENSE).
